@@ -1,0 +1,224 @@
+
+Size of uint8_t: 1
+Size of uint16_t: 2
+Size of uint32_t: 4
+Size of short: 2
+Size of int: 4
+Size of long int: 8
+Size of long long int: 8
+Size of size_t: 8
+Size of float: 4
+Size of double: 8
+Size of long double: 16
+DBL_MANT_DIG  64
+LDBL_MANT_DIG  64
+DBL_MIN_10_EXP -307
+LDBL_MIN_10_EXP -4931
+DBL_MIN 2.225074e-308
+LDBL_MIN 3.362103e-4932
+LDBL_MAX_EXP 16384 
+RAND_MAX 2147483647
+MAX UINT 0
+
+Precision DIGITS 15  
+
+Compile Timestamp: Feb  8 2022:14:53:53 
+Compile Timestamp: 2022_02_08_14_53 
+
+argc 44 
+arg 0  /home/nardone/software/mmap.2022_02_08_14_53.intel  /home/nardone/software/mmap.2022_02_08_14_53.intel 
+arg 1  --trait  --trait 
+arg 2  DP  DP 
+arg 3  --ref_colon_alt  --ref_colon_alt 
+arg 4  --compute_robust_ses  --compute_robust_ses 
+arg 5  --exposures  --exposures 
+arg 6  dDEPR  dDEPR 
+arg 7  qDEPR  qDEPR 
+arg 8  --ExC_covariates  --ExC_covariates 
+arg 9  AGE  AGE 
+arg 10  AGE2  AGE2 
+arg 11  --include_ExStrata  --include_ExStrata 
+arg 12  --g_by_exposure_analysis  --g_by_exposure_analysis 
+arg 13  --min_maf  --min_maf 
+arg 14  0.001  0.001 
+arg 15  --strata  --strata 
+arg 16  SEX  SEX 
+arg 17  --covariates  --covariates 
+arg 18  PC1  PC1 
+arg 19  PC2  PC2 
+arg 20  PC3  PC3 
+arg 21  PC4  PC4 
+arg 22  PC5  PC5 
+arg 23  PC6  PC6 
+arg 24  PC7  PC7 
+arg 25  PC8  PC8 
+arg 26  PC9  PC9 
+arg 27  PC10  PC10 
+arg 28  AGE  AGE 
+arg 29  AGE2  AGE2 
+arg 30  --file_prefix  --file_prefix 
+arg 31  PHASE2.INGI-FVG.EA.DBP  PHASE2.INGI-FVG.EA.DBP 
+arg 32  --file_suffix  --file_suffix 
+arg 33  20220728.22  20220728.22 
+arg 34  --phenotype_filename  --phenotype_filename 
+arg 35  /netapp05/analisi_nardone/CHARGE_DeprBP/pheno_n_cov_files/2.INGI-FVG.pheno.1927.sex_combined.DBP.csv  /netapp05/analisi_nardone/CHARGE_DeprBP/pheno_n_cov_files/2.INGI-FVG.pheno.1927.sex_combined.DBP.csv 
+arg 36  --sparse_geno_analysis  --sparse_geno_analysis 
+arg 37  --tab_delimited  --tab_delimited 
+arg 38  --binary_genotype_filename  --binary_genotype_filename 
+arg 39  /home/nardone/TEST_CHARGE/test_vcf/INGI-FVG.vcf_converted.1.r2.0.4.mac.5.0.bit.12.probt.0.99.b.1001.chr22.bin  /home/nardone/TEST_CHARGE/test_vcf/INGI-FVG.vcf_converted.1.r2.0.4.mac.5.0.bit.12.probt.0.99.b.1001.chr22.bin 
+arg 40  --num_mkl_threads  --num_mkl_threads 
+arg 41  8  8 
+arg 42  --phenotype_id  --phenotype_id 
+arg 43  CODPAZ  CODPAZ 
+
+ Command line options: Num arguments 44
+/home/nardone/software/mmap.2022_02_08_14_53.intel
+--trait
+DP
+--ref_colon_alt
+--compute_robust_ses
+--exposures
+dDEPR
+qDEPR
+--ExC_covariates
+AGE
+AGE2
+--include_ExStrata
+--g_by_exposure_analysis
+--min_maf
+0.001
+--strata
+SEX
+--covariates
+PC1
+PC2
+PC3
+PC4
+PC5
+PC6
+PC7
+PC8
+PC9
+PC10
+AGE
+AGE2
+--file_prefix
+PHASE2.INGI-FVG.EA.DBP
+--file_suffix
+20220728.22
+--phenotype_filename
+/netapp05/analisi_nardone/CHARGE_DeprBP/pheno_n_cov_files/2.INGI-FVG.pheno.1927.sex_combined.DBP.csv
+--sparse_geno_analysis
+--tab_delimited
+--binary_genotype_filename
+/home/nardone/TEST_CHARGE/test_vcf/INGI-FVG.vcf_converted.1.r2.0.4.mac.5.0.bit.12.probt.0.99.b.1001.chr22.bin
+--num_mkl_threads
+8
+--phenotype_id
+CODPAZ
+
+--trait  1  DP
+
+--ref_colon_alt: TRUE 
+--compute_robust_ses: TRUE 
+dDEPR
+qDEPR dDEPR qDEPR
+
+--exposures  2 
+AGE
+AGE2 AGE AGE2
+
+--exposures  2 
+--exclude_regression_mean TRUE
+--g_by_exposure_analysis: TRUE 
+--min_maf:  0.001000 
+SEX SEX
+
+--strata  1 
+PC1
+PC2
+PC3
+PC4
+PC5
+PC6
+PC7
+PC8
+PC9
+PC10
+AGE
+AGE2
+Num covariate groups  1 size 12 PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10 AGE AGE2   :  
+ PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10 AGE AGE2
+
+--covariates  12 
+--file_prefix: PHASE2.INGI-FVG.EA.DBP 
+--file_suffix: 20220728.22 
+--phenotype_filename  : num files 1  /netapp05/analisi_nardone/CHARGE_DeprBP/pheno_n_cov_files/2.INGI-FVG.pheno.1927.sex_combined.DBP.csv
+
+--sparse_geno_analysis: TRUE  
+--tab_delimited TRUE
+--binary_genotype_filename: /home/nardone/TEST_CHARGE/test_vcf/INGI-FVG.vcf_converted.1.r2.0.4.mac.5.0.bit.12.probt.0.99.b.1001.chr22.bin 
+--num_mkl_threads  8 
+--phenotype_id: CODPAZ 
+Done Assign file names 
+
+omp_procs 32
+
+Max number of threads Intel® MKL can use for parallel runs : 16 
+ Running Intel® MKL using 8 threads 
+
+Done optionsA 
+
+twin prime 1 107911457
+twin prime 2 107911459
+compile timestamp 2022_06_20_08_45
+checksum 1804289383
+version number 1
+binary_file_type: V_ZSTD_COMPRESSED_GENOTYPE_FILE
+Compression level: 7
+r2 included TRUE
+impute included TRUE
+extra buffer 100
+genotype_file_type : V_GENOTYPE_PROBABILITY
+num dosage bit 12
+dosage multiplier 4000
+gp[0]=0.990000
+gp[1]=0.990000
+gp[2]=0.990000
+d[0]=0.000000
+d[1]=0.000000
+d[2]=0.000000
+d[3]=0.000000
+flag 0
+num subjects 1927
+num markers 0
+subject pointer 263
+marker_start pointer 4340
+marker increment statt pointer 0
+buffer size 78080
+num uncompressed subject id bytes 13490
+num compressed subject id bytes 4061
+Read result 4061
+inflate Z_STREAM_END
+inflate succeded
+
+S: 1 582001
+S: 2 582002
+S: 3 582003
+S: 4 582004
+S: 5 582005
+S: 1924 700478
+S: 1925 700489
+S: 1926 700493
+S: 1927 700497
+
+Pointer to start of stored marker pointers 0
+Marker pointer: Number of Pointer Bytes 107911457
+Marker pointer: Number of Compressed Bytes 107911459
+read result maker pointer array344704
+inflate output size 78079
+Marker pointer inflate Init Z_OK
+Marker pointer inflate Z_DATA_ERROR
+inflate failed -3
+
+msg incorrect header check

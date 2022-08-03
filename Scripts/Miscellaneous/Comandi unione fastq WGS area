@@ -1,0 +1,62 @@
+Now we need to get all the fastq and merge them together for each sample:
+
+```bash
+declare -A runs=()
+#set the run array
+runs[RUN_1]=$(echo "210406_A00618_0152_BHNYJHDSXY")
+runs[RUN_2]=$(echo "210413_A00618_0154_BHNVNHDSXY")
+runs[RUN_3]=$(echo "210419_A00618_0156_BHNVGHDSXY")
+runs[RUN_4]=$(echo "210426_A00618_0159_BHNVMVDSXY")
+
+for run_n in RUN_1 RUN_2 RUN_3 RUN_4
+do
+
+run_name=(${runs[${run_n}]})
+echo ${run_name}
+out_folder=/large/___HOME___/burlo/cocca/analyses/FVG_HC_WGS/2021_AREA_QC/BATCH_20210507/LISTS
+
+find -L /large/___HOME___/burlo/cocca/analyses/FVG_HC_WGS/2021_AREA_QC/BATCH_20210507/${run_name} -type f -name "*.gz" | fgrep -v "Undetermined"| sort > ${out_folder}/${run_n}_files_list.txt
+done
+```
+
+Merge data from the 4 different runs
+
+```bash
+out_path=/large/___SCRATCH___/burlo/cocca/WGS_HC/FVG/AREA/BATCH_20210507/0.RAW_DATA
+base_lists=/large/___HOME___/burlo/cocca/analyses/FVG_HC_WGS/2021_AREA_QC/BATCH_20210507/LISTS
+
+(echo "#!/usr/bin/env bash" ;paste -d " " ${base_lists}/RUN_1_files_list.txt ${base_lists}/RUN_2_files_list.txt ${base_lists}/RUN_3_files_list.txt ${base_lists}/RUN_4_files_list.txt | awk -v outfile=${out_path} '{OFS=" "}{split($1,a,"/");split(a[12],b,"_"); print "cat",$0,">",outfile"/"b[1]"_"b[2]"_L001_"b[3]"_"b[4],"&"}') > ${base_lists}/MERGE_batch_20210507.sh
+
+split -l 24 -d -a 3 --additional-suffix=.sh ${base_lists}/MERGE_batch_20210507.sh ${base_lists}/MERGE_batch_20210507_BATCH
+
+
+for btch in {001..007}
+do
+
+sed -i '1#!/usr/bin/env bash' ${base_lists}/MERGE_batch_20210507_BATCH${btch}.sh
+
+done
+```
+
+Now submit the merging on all nodes
+
+```bash
+log_folder=/large/___HOME___/burlo/cocca/analyses/FVG_HC_WGS/2021_AREA_QC/BATCH_20210507/Log
+mkdir -p ${log_folder}
+
+mkdir -p /large/___SCRATCH___/burlo/cocca/WGS_HC/FVG/AREA/BATCH_20210507/0.RAW_DATA
+for batch in {000..007}
+do
+
+cores=24
+queue=thin
+mem=500g
+echo "/large/___HOME___/burlo/cocca/analyses/FVG_HC_WGS/2021_AREA_QC/BATCH_20210507/LISTS/MERGE_batch_20210507_BATCH${batch}.sh"| qsub -N merge_${batch} -q ${queue} -V -k eod -o ${log_folder}/merge_${batch}.log -e ${log_folder}/merge_${batch}.e -l select=1:ncpus=${cores}:mem=${mem} -l walltime=96:00:00
+done
+```
+Comando di base:
+
+cat /large/___HOME___/burlo/cocca/analyses/FVG_HC_WGS/2021_AREA_QC/BATCH_20210507/210406_A00618_0152_BHNYJHDSXY/0.FASTQ/593670_S5_R1_001.fastq.gz /large/___HOME___/burlo/cocca/analyses/FVG_HC_WGS/2021_AREA_QC/BA
+TCH_20210507/210413_A00618_0154_BHNVNHDSXY/0.FASTQ/593670_S5_R1_001.fastq.gz /large/___HOME___/burlo/cocca/analyses/FVG_HC_WGS/2021_AREA_QC/BATCH_20210507/210419_A00618_0156_BHNVGHDSXY/0.FASTQ/593670_S5_R1_001.f
+astq.gz /large/___HOME___/burlo/cocca/analyses/FVG_HC_WGS/2021_AREA_QC/BATCH_20210507/210426_A00618_0159_BHNVMVDSXY/0.FASTQ/593670_S5_R1_001.fastq.gz > /large/___SCRATCH___/burlo/cocca/WGS_HC/FVG/AREA/BATCH_2021
+0507/0.RAW_DATA/593670_S5_L001_R1_001.fastq.gz

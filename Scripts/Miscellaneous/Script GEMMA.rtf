@@ -1,0 +1,67 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Menlo-Bold;\f2\fnil\fcharset0 Menlo-Regular;
+}
+{\colortbl;\red255\green255\blue255;\red252\green33\blue24;\red0\green0\blue0;\red74\green0\blue255;
+}
+\paperw11900\paperh16840\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 ## calcolo kinship con GEMMA\
+/shared/software/gemma/gemma-0.98-linux-static  -bfile /netapp02/data/genotypes/SR/SR_updated_20210312 -gk 2 -o /home/nardone/SR_updated_20210312_kinship\
+##\
+\
+##regressione con GEMMA\
+\pard\tx624\tx1248\tx1872\tx2496\tx3120\tx3744\tx4368\tx4992\tx5616\tx6241\tx6865\tx7489\tx8113\tx8737\tx9361\tx9985\tx10609\tx11233\tx11857\tx12482\tx13106\tx13730\tx14354\tx14978\tx15602\tx16226\tx16850\tx17474\tx18098\tx18723\tx19347\tx19971\tx20595\tx21219\tx21843\tx22467\tx23091\tx23715\tx24339\tx24964\tx25588\tx26212\tx26836\tx27460\tx28084\tx28708\tx29332\tx29956\tx30580\tx31205\tx31829\tx32453\tx33077\tx33701\tx34325\tx34949\tx35573\tx36197\tx36822\tx37446\tx38070\tx38694\tx39318\tx39942\li80\fi-80\pardirnatural\partightenfactor0
+\cf0 chr=22\
+geno=/netapp02/data/imputation/HRC/SR/BIMBAM/chr$\{chr\}.
+\f1\b\fs22 \cf2 \CocoaLigature0 pbwt_reference_impute_clean.
+\f0\b0\fs24 \cf0 \CocoaLigature1 gen.gz.bimbam.gz\
+pheno=/home/nardone/File_GEMMA/PHENO_893_D_P_SR.txt\
+snp_ann=/netapp02/data/imputation/HRC/SR/BIMBAM/chr$\{chr\}.
+\f1\b\fs22 \cf2 \CocoaLigature0 pbwt_reference_impute_clean.
+\f0\b0\fs24 \cf0 \CocoaLigature1 gen.gz.pos\
+kinship=/home/nardone/output/SR_updated_20210312_kinship.sXX.txt\
+cov=/home/nardone/File_GEMMA/Covariate_sesso_eta_scolarita_D_P_SR.txt\
+out=GEMMA_SR_discromie_D_P_chr$\{chr\}.txt\
+echo "/shared/software/gemma/gemma-0.98.4-linux-static-AMD64-g $\{geno\} -p $\{pheno\} -a $\{snp_ann\} -k $\{kinship\} -lm 4 -maf 0 -c $\{cov\} -o $\{out\}" |  qsub -N job_$\{chr\}_v  -o \\$JOB_ID_$\{chr\}_v.log -e \\$JOB_ID_$\{chr\}_v.e -V -l h_vmem=10G -cwd -q fast,all.q@geneticalabdb7.burlo.trieste.it \
+\
+## for loop regressione\
+for chr in \{1..21\}\
+do\
+geno=/netapp02/data/imputation/HRC/SR/BIMBAM/chr$\{chr\}.
+\f1\b\fs22 \cf2 \CocoaLigature0 pbwt_reference_impute_clean.
+\f0\b0\fs24 \cf0 \CocoaLigature1 gen.gz.bimbam.gz\
+pheno=/home/nardone/File_GEMMA/PHENO_893_D_P_SR.txt\
+snp_ann=/netapp02/data/imputation/HRC/SR/BIMBAM/chr$\{chr\}.
+\f1\b\fs22 \cf2 \CocoaLigature0 pbwt_reference_impute_clean.
+\f0\b0\fs24 \cf0 \CocoaLigature1 gen.gz.pos\
+kinship=/home/nardone/output/SR_updated_20210312_kinship.sXX.txt\
+cov=/home/nardone/File_GEMMA/Covariate_sesso_eta_scolarita_D_P_SR.txt\
+out=GEMMA_SR_discromie_D_P_chr$\{chr\}.txt\
+echo "/shared/software/gemma/gemma-0.98-linux-static -g $\{geno\} -p $\{pheno\} -a $\{snp_ann\} -k $\{kinship\} -lm 4 -maf 0 -c $\{cov\} -o $\{out\}" |  qsub -N job_$\{chr\}_v  -o \\$JOB_ID_$\{chr\}_v.log -e \\$JOB_ID_$\{chr\}_v.e -V -l h_vmem=10G -cwd -q fast,all.q@geneticalabdb7.burlo.trieste.it \
+done\
+\
+##selezione 0.01 < MAF<0.99\
+\cf3 chr=22\
+echo '\CocoaLigature0 chr,rs,ps,n_mis,n_obs,allele1,allele0,af,beta,se,p_wald,p_lrt,p_score\CocoaLigature1 ' > /home/nardone/Discromie/Deutano_Protano/Test_MAF/SR_D_P_maf01_chr$\{chr\}.csv\
+cat /home/nardone/
+\fs22 \cf4 \CocoaLigature0 Discromie/Deutano_Protano/output/\cf3 GEMMA_SR_discromie_D_P_chr22.txt.assoc.txt
+\fs24 \CocoaLigature1  | sed '1d' |  awk 'BEGIN \{FS=\'93 \'94\} ($8>=0.01 && $8<=0.99) \{print $0\}' >> \cf0 /home/nardone/Discromie/Deutano_Protano/Test_MAF/\cf3 SR_D_P_maf01_chr$\{chr\}.csv\
+\cf0 \
+## for loop selezione MAF  \
+for chr in \{1..21\}\
+do\
+echo -e \'92\CocoaLigature0 chr,rs,ps,n_mis,n_obs,allele1,allele0,af,beta,se,p_wald,p_lrt,p_score\CocoaLigature1 ' > /path/SR_D_P_maf01_chr$\{chr\}.csv\
+cat 
+\f2\fs22 \CocoaLigature0 GEMMA_SR_discromie_D_P_chr$\{chr\}.txt.assoc.txt
+\f0\fs24 \CocoaLigature1  | sed '1d' |  awk 'BEGIN\{FS=\'93,\'94\} ($8>=0.01 && $8<=0.99) \{print $0\}' >> /path/SR_D_P_maf01_chr$\{chr\}.txt\
+\
+\
+\
+\
+\
+qstat\
+qdel -u nome utente\
+ll -htr\
+\
+}

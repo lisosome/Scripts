@@ -1,0 +1,32 @@
+---
+# Config file for CHARGE DEPRESSION-BLOOD PRESSURE ANALYSES
+# Model specifications and files absolute path
+model:
+  name: 'MODEL1'
+  depr_trait: "qDEPR"
+  COVs:
+    qm: "PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10 AGE AGE_sq AGExQDEP AGEsqxQDEP qDEPR"
+    qf: "PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10 AGE AGE_sq AGExQDEP AGEsqxQDEP qDEPR"
+    qcomb: "PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10 AGE AGE_sq AGExQDEP AGEsqxQDEP MMAP_sex SEXxQDEP qDEPR"
+    dm: "PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10 AGE AGE_sq AGExDDEP AGEsqxDDEP dDEPR"
+    df: "PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10 AGE AGE_sq AGExDDEP AGEsqxDDEP dDEPR"
+    dcomb: "PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10 AGE AGE_sq AGExDDEP AGEsqxDDEP MMAP_sex SEXxDDEP dDEPR"
+    m2: "PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10 AGE AGE_sq"
+    f2: "PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10 AGE AGE_sq"
+    comb2: "PC1 PC2 PC3 PC4 PC5 PC6 PC7 PC8 PC9 PC10 AGE AGE_sq MMAP_sex"
+  kinship_file: '/netapp04/concas/dose_MMAP/FVG/mmap_kinship.bin'
+  in_file:
+    m: "/netapp05/analisi_nardone/CHARGE_DeprBP/pheno_n_cov_files/FVG_1927_complete_DepBP_males_only.csv"
+    f: "/netapp05/analisi_nardone/CHARGE_DeprBP/pheno_n_cov_files/FVG_1927_complete_DepBP_females_only.csv"
+    comb: "/netapp05/analisi_nardone/CHARGE_DeprBP/pheno_n_cov_files/FVG_Dep_BP_complete_sex_combined.csv"
+  cov_file:
+    m: "/netapp05/analisi_nardone/CHARGE_DeprBP/pheno_n_cov_files/FVG_1927_complete_DepBP_males_only.csv"
+    f: "/netapp05/analisi_nardone/CHARGE_DeprBP/pheno_n_cov_files/FVG_1927_complete_DepBP_females_only.csv"
+    comb: "/netapp05/analisi_nardone/CHARGE_DeprBP/pheno_n_cov_files/FVG_Dep_BP_complete_sex_combined.csv"
+  ped_file: "/netapp05/analisi_nardone/CHARGE_DeprBP/pheno_n_cov_files/FVG_Calcium_ECG_ped.csv"
+  pheno_id: "CODPAZ"
+  file_suff: ""
+resources:
+  threads: 8
+  mem: 30G
+  nodes: "fast@apollo1.burlo.trieste.it,fast@apollo2.burlo.trieste.it,fast@apollo3.burlo.trieste.it,fast@apollo4.burlo.trieste.it,long@apollo2.burlo.trieste.it,long@apollo4.burlo.trieste.it"

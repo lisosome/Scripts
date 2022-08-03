@@ -1,0 +1,93 @@
+###PRE_PROCESSING###
+
+###### Single node mode | Orfeo
+for batch in 3 4
+do
+cores=24
+queue=thin
+mem=100g
+base_cwd=/large/___HOME___/burlo/nardone/pipelines_cocca/SeqPreproc-snakemake
+snakefile=/large/___HOME___/burlo/nardone/pipelines_cocca/SeqPreproc-snakemake/Snakefile
+configfile=/large/___HOME___/burlo/nardone/pipelines_cocca/SeqPreproc-snakemake/BATCH${batch}_config.yaml
+log_folder=${base_cwd}/Log
+log_name=BATCH${batch}.log
+stderr_name=BATCH${batch}.err
+echo "cd ${base_cwd};module load conda;conda activate snakemake; snakemake -p -r -s ${snakefile} --configfile ${configfile} --cores ${cores} --use-envmodules --keep-going" | qsub -N VC_s10 -q ${queue} -V -k eod -o ${log_folder}/${log_name} -e ${log_folder}/${stderr_name} -l select=1:ncpus=${cores}:mem=${mem} -l walltime=96:00:00
+done
+
+####### Cluster mode | Orfeo
+module load conda
+conda activate snakemake
+
+base_cwd=/large/___HOME___/burlo/nardone/SnakeLog
+log_folder=${base_cwd}/tstLog
+mkdir -p ${log_folder}
+cd ${base_cwd}
+snakefile=/large/___HOME___/burlo/nardone/pipelines_cocca/SeqPreproc-snakemake/Snakefile
+configfile=/large/___HOME___/burlo/nardone/analyses/FVG_COVID_HC/QC_preprocess/COVID_220114_220121/config/no_var_job_config.yaml
+log_name=COVID_no_var_job_test_preproc.log
+stderr_name=COVID_no_var_job_test_preproc.err
+cores=25
+queue=thin
+snakemake -p -r -s ${snakefile} --configfile ${configfile} --use-envmodules --keep-going --cluster "qsub -q ${queue} -V -k eod -l select=1:ncpus={threads}:mem={resources.mem_mb}mb -l walltime=96:00:00" -j 25 1> ${log_folder}/${log_name} 2> ${log_folder}/${stderr_name}
+
+
+#####VARIANT_CALLING#######
+
+### CLUSTER MODE | Orfeo ########
+
+module load conda
+conda activate snakemake
+
+base_cwd=/large/___HOME___/burlo/nardone/analyses/FVG_COVID_HC/Variant_Calling
+log_folder=${base_cwd}/Log
+#mkdir -p ${log_folder}
+cd ${base_cwd}
+
+snakefile=/large/___HOME___/burlo/nardone/pipelines_cocca/VariantCalling-snakemake/Snakefile
+configfile=/large/___HOME___/burlo/nardone/analyses/FVG_COVID_HC/Variant_Calling/resources_test_VC/config_VC_covid_BATCH_2.yaml
+
+log_name=variantCalling_pipeline_BATCH_2_retake.log
+stderr_name=variantCalling_pipeline_BATCH_2_retake.err
+cores=24
+queue=thin
+mem=100g
+snakemake -p -r -s ${snakefile} --configfile ${configfile} --use-envmodules --keep-going --cluster "qsub -q ${queue} -V -k eod -l select=1:ncpus={threads}:mem={resources.mem_mb}mb -l walltime=96:00:00" -j ${cores} 1> ${log_folder}/${log_name} 2> ${log_folder}/${stderr_name}
+
+echo "cd ${base_cwd};module load conda;conda activate snakemake; snakemake -p -r -s ${snakefile} --configfile ${configfile} --cores ${cores} --use-envmodules --keep-going" | qsub -N VC_B2 -q ${queue} -V -k eod -o ${log_folder}/${log_name} -e ${log_folder}/${stderr_name} -l select=1:ncpus=${cores}:mem=${mem} -l walltime=96:00:00
+
+
+######## CHROMOTRIPSIS SAMPLES PROCESSING #######
+
+###Pre_Processing###
+module load conda
+conda activate snakemake
+
+cores=8
+queue=thin
+mem=10g
+base_cwd=/large/___HOME___/burlo/nardone/analyses/CHROMOTRIPSIS
+snakefile=/large/___HOME___/burlo/nardone/pipelines_cocca/SeqPreproc-snakemake/Snakefile
+configfile=/large/___HOME___/burlo/nardone/analyses/CHROMOTRIPSIS/resources_pipeline_preQC/config_chromo.yaml
+log_folder=/large/___HOME___/burlo/nardone/analyses/CHROMOTRIPSIS/Log/1.PRE_PROCESSING
+log_name=Preproc_chromo.log
+stderr_name=Preproc_chromo.err
+echo "cd ${base_cwd};module load conda;conda activate snakemake; snakemake -p -r -s ${snakefile} --configfile ${configfile} --cores ${cores} --use-envmodules --keep-going" | qsub -N pre_chro -q ${queue} -V -k eod -o ${log_folder}/${log_name} -e ${log_folder}/${stderr_name} -l select=1:ncpus=${cores}:mem=${mem} -l walltime=96:00:00
+
+###BATCH-Variant Calling###
+module load conda
+conda activate snakemake
+
+base_cwd=/large/___HOME___/burlo/nardone/analyses/CHROMOTRIPSIS
+log_folder=${base_cwd}/Log/2.5.VARCALL
+mkdir -p ${log_folder}
+cd ${base_cwd}
+snakefile=/large/___HOME___/burlo/nardone/pipelines_cocca/VariantCalling-snakemake/Snakefile
+configfile=/large/___HOME___/burlo/nardone/analyses/CHROMOTRIPSIS/resources_VC.BATCH/config_VC.BATCH_chromo.yaml
+log_name=VC.BATCH_2.5_chromo.log
+stderr_name=VC.BATCH_2.5_chromo.err
+cores=15
+queue=thin
+mem=100g
+snakemake -n -p -r -s ${snakefile} --configfile ${configfile} --use-envmodules --keep-going --cluster "qsub -q ${queue} -V -k eod -l select=1:ncpus={threads}:mem={resources.mem_mb}mb -l walltime=96:00:00" -j 25 1> ${log_folder}/${log_name} 2> ${log_folder}/${stderr_name}
+echo "cd ${base_cwd};module load conda;conda activate snakemake; snakemake -p -r -s ${snakefile} --configfile ${configfile} --cores ${cores} --use-envmodules --until gatk_hap_caller --keep-going" | qsub -N pre_chro -q ${queue} -V -k eod -o ${log_folder}/${log_name} -e ${log_folder}/${stderr_name} -l select=1:ncpus=${cores}:mem=${mem} -l walltime=96:00:00

@@ -1,0 +1,53 @@
+#TEST PLUGIN VEP 105 GRCh38
+maincache=/shared/resources/VEP_cache
+vep_version=105
+gerp_db=${maincache}/${vep_version}/compara/gerp_conservation_scores.homo_sapiens.${build}.bw
+dbNSFP_fields="Ensembl_transcriptid,Uniprot_acc,VEP_canonical,Polyphen2_HDIV_score,Polyphen2_HDIV_rankscore,Polyphen2_HDIV_pred,Polyphen2_HVAR_score,Polyphen2_HVAR_rankscore,Polyphen2_HVAR_pred,LRT_score,LRT_converted_rankscore,LRT_pred,LRT_Omega,MutationTaster_score,MutationTaster_converted_rankscore,MutationTaster_pred,MutationTaster_model,MutationTaster_AAE"
+gnomad_annot_string="AC,AN,AF,nhomalt,AC-XY,AN-XY,AF-XY,nhomalt-XY,AC-oth,AN-oth,AF-oth,nhomalt-oth,AC-ami,AN-ami,AF-ami,nhomalt-ami,AC-sas,AN-sas,AF-sas,nhomalt-sas,AC-fin,AN-fin,AF-fin,nhomalt-fin,AC-eas,AN-eas,AF-eas,nhomalt-eas,AC-amr,AN-amr,AF-amr,nhomalt-amr,AC-afr,AN-afr,AF-afr,nhomalt-afr,AC-mid,AN-mid,AF-mid,nhomalt-mid,AC-asj,AN-asj,AF-asj,nhomalt-asj,AC-nfe,AN-nfe,AF-nfe,nhomalt-nfe"
+cadd_v="v1.6"
+build=GRCh38
+chr=22
+gnomad_v=${maincache}/${vep_version}/cadd/${cadd_v}/${build}/gnomad.genomes.r3.0.snv.tsv.gz
+gnomad_indel=${maincache}/${vep_version}/cadd/${cadd_v}/${build}/gnomad.genomes.r3.0.indel.tsv.gz
+cadd_whole_genome=${maincache}/${vep_version}/cadd/${cadd_v}/${build}/whole_genome_SNVs.tsv.gz
+plugin_path=/home/nardone/.conda/envs/vep105/share/ensembl-vep-105.0-0
+vep_bin=/home/nardone/.conda/envs/vep105/share/ensembl-vep-105.0-0/vep
+gnomad_vcf=/netapp05/analisi_nardone/gnomAD/GRCh38/gnomad.genomes.r3.0.sites.chr${chr}_trimmed_info.vcf.bgz
+dbNSFP=/netapp05/analisi_nardone/dbNSFP/${build}/dbNSFP_4.1_variant.chr${chr}.gz
+${vep_bin} -i /netapp06/VCF_ENDOMETRIOSI/GRCh38/reannot/${chr}.vcf.gz --stats_text --force_overwrite --format vcf --offline --fasta /shared/resources/hgRef/hg38/Homo_sapiens_assembly38.fasta --compress_output bgzip --dir_plugins ${plugin_path} --o /netapp06/VCF_ENDOMETRIOSI/GRCh38/reannot/testvep/vep.${chr}.vcf.gz --buffer_size 200000 --plugin ExACpLI,${plugin_path}/ExACpLI_values.txt --vcf --cache --merged --dir_cache ${maincache}/${vep_version} --assembly ${build}
+
+
+--custom ${gnomad_vcf},gnomADv3.1,vcf,exact,0,${gnomad_annot_string} --af_gnomad --af --af_1kg --af_esp --variant_class --regulatory --ccds --protein --uniprot --sift b --xref_refseq --hgvs --hgvsg --canonical --polyphen b --symbol  --plugin dbNSFP,${dbNSFP},${dbNSFP_fields} --plugin LoF,human_ancestor_fa:${maincache}/${vep_version}/loftee_data/human_ancestor.fa.gz,filter_position:0.05,min_intron_size:15,conservation_file:${maincache}/${vep_version}/loftee_data/phylocsf_gerp.sql,loftee_path:${plugin_path} --plugin Conservation,${gerp_db}
+#Functionant plugin
+--plugin CADD,${cadd_whole_genome},${gnomad_indel},${gnomad_v}
+--plugin dbNSFP,${dbNSFP},${dbNSFP_fields}
+--plugin LoF,human_ancestor_fa:${maincache}/${vep_version}/loftee_data/human_ancestor.fa.gz,filter_position:0.05,min_intron_size:15,conservation_file:${maincache}/${vep_version}/loftee_data/phylocsf_gerp.sql,loftee_path:${plugin_path}
+--plugin Conservation,${gerp_db}
+--plugin ExACpLI,${plugin_path}/ExACpLI_values.txt
+
+######################################################
+
+#TEST PLUGIN VEP 105 GRCh37
+maincache=/shared/resources/VEP_cache
+vep_version=105
+build=GRCh37
+chr=22
+cadd_v="v1.6"
+gerp_db=${maincache}/${vep_version}/compara/gerp_conservation_scores.homo_sapiens.${build}.bw
+dbNSFP_fields="Ensembl_transcriptid,Uniprot_acc,VEP_canonical,Polyphen2_HDIV_score,Polyphen2_HDIV_rankscore,Polyphen2_HDIV_pred,Polyphen2_HVAR_score,Polyphen2_HVAR_rankscore,Polyphen2_HVAR_pred,LRT_score,LRT_converted_rankscore,LRT_pred,LRT_Omega,MutationTaster_score,MutationTaster_converted_rankscore,MutationTaster_pred,MutationTaster_model,MutationTaster_AAE"
+gnomad_annot_string="AC,AN,AF,nhomalt,AC-XY,AN-XY,AF-XY,nhomalt-XY,AC-oth,AN-oth,AF-oth,nhomalt-oth,AC-ami,AN-ami,AF-ami,nhomalt-ami,AC-sas,AN-sas,AF-sas,nhomalt-sas,AC-fin,AN-fin,AF-fin,nhomalt-fin,AC-eas,AN-eas,AF-eas,nhomalt-eas,AC-amr,AN-amr,AF-amr,nhomalt-amr,AC-afr,AN-afr,AF-afr,nhomalt-afr,AC-mid,AN-mid,AF-mid,nhomalt-mid,AC-asj,AN-asj,AF-asj,nhomalt-asj,AC-nfe,AN-nfe,AF-nfe,nhomalt-nfe"
+gnomad_v=${maincache}/${vep_version}/cadd/${cadd_v}/${build}/gnomad.genomes.r2.1.1.snv.tsv.gz
+gnomad_indel=${maincache}/${vep_version}/cadd/${cadd_v}/${build}/gnomad.genomes.r2.1.1.indel.tsv.gz
+cadd_whole_genome=${maincache}/${vep_version}/cadd/${cadd_v}/${build}/whole_genome_SNVs.tsv.gz
+plugin_path=/home/nardone/.conda/envs/vep105/share/ensembl-vep-105.0-0
+vep_bin=/home/nardone/.conda/envs/vep105/share/ensembl-vep-105.0-0/vep
+dbNSFP=/netapp05/analisi_nardone/dbNSFP/GRCh38/dbNSFP_4.1_variant.chr${chr}.gz
+gnomad_vcf=/netapp05/analisi_nardone/gnomAD/GRCh37/gnomad.genomes.r2.1.sites.chr${chr}_noVEP.vcf.gz
+
+${vep_bin} -i /netapp06/VCF_ENDOMETRIOSI/GRCh37/reannot/${chr}.vcf.gz --stats_text --force_overwrite --format vcf --offline --fasta /shared/resources/hgRef/hg38/Homo_sapiens_assembly38.fasta --compress_output bgzip --dir_plugins ${plugin_path} --o /netapp06/VCF_ENDOMETRIOSI/GRCh37/reannot/testvep/vep.${chr}.vcf.gz --buffer_size 200000 --plugin ExACpLI,${plugin_path}/ExACpLI_values.txt --vcf --cache --merged --dir_cache ${maincache}/${vep_version} --assembly ${build}
+
+#PASS
+--plugin dbNSFP,${dbNSFP},${dbNSFP_fields}
+--plugin CADD,${cadd_whole_genome},${gnomad_indel},${gnomad_v}
+--plugin Conservation,${gerp_db}
+--plugin ExACpLI,${plugin_path}/ExACpLI_values.txt

@@ -1,0 +1,188 @@
+fin=c()
+sts=c()
+val=c()
+for (x in colnames(deu[,2:27])){stat=t.test(deu[,x]~deu$Gruppo)
+sts=rbind(round(stat$estimate, 2), sts)
+val=rbind(val, round(stat$p.value, 5))}
+fin=cbind(sts, val)
+row.names(fin)=colnames(deu[,2:27])
+colnames(fin)=c("Media Controlli", "Media Casi", "p-value")
+
+
+
+PreferenzeAlimentari=function(filename, fileout, compar0, compar1){
+df=read.table(filename, he=T)
+fin=c()
+sts=c()
+val=c()
+for (x in colnames(df[,2:80])){stat=t.test(df[,x]~df$Gruppo)
+sts=rbind(sts, round(stat$estimate, 2))
+val=rbind(val, format.pval(stat$p.value, digits=3, eps=1e-100))}
+fin=cbind(sts, val)
+row.names(fin)=colnames(df[,2:80])
+colnames(fin)=c(paste("Media",compar0,sep=" "), paste("Media",compar1,sep=" "), "p-value")
+write.table(fin, fileout, sep="\t", row.names=T, col.names=T, quote=F)
+}
+
+
+PreferenzeAlimentari("Tritan_vs_Protan_df_preferenze_alimentari.txt", "Tritan_vs_Protan_Preferenze_alimentari.txt", "Protan", "Tritan")
+
+Preferenze_alimentari_Tritan_controlli.txt
+Preferenze_alimentari_deutan_controlli.txt
+Preferenze_alimentari_Protan_controlli.txt
+Deutan_vs_Protan_Preferenze_alimentari.txt
+Tritan_vs_Deutan_Preferenze_alimentari.txt
+
+
+Filtering_pval=function(filein, group0, group1, out_path){
+df=read.table(filein, he=F, skip=1,  col.names=c("Cibi", paste("Media", group0, sep=" "), paste("Media", group1, sep=" "), "p-value"))
+clean_df=df[df[,4] <= 0.1,]
+write.table(clean_df, paste(out_path,"/","Analisi_",group1, "_vs_", group0, "_clean.txt", sep=""), sep="\t", row.names=F, col.names=T, quote=F)
+}
+
+for (x in 1:3){Filtering_pval(paste("Analisi_",label[x],"_vs_controlli.txt", sep=""), "Controlli", case_names[x], outpath)}
+
+Filtering_clump=function(filein, fileout){
+df=read.table(filein, he=T)
+df_fix=df[,c(1,3:11)]
+df_fix$FDR=p.adjust(df_fix$P, "fdr")
+df_final=subset(df_fix, FDR<=0.00000005)
+df_final$FDR=format.pval(df_final$FDR,digits=4,eps=1e-100)
+write.table(df_final, fileout, quote=F, row.names=F, sep="\t")
+}
+
+CHARGE_compiler=function(file_in){
+df_in=read.table(file_in, he=T)
+table(df_in$SEX)
+summary(df_in$AGE)
+sd(df_in$AGE)
+summary(df_in$MeanSP)
+sd(df_in$MeanSP)
+summary(df_in$MeanDP)
+sd(df_in$MeanDP)
+summary(df_in$MeanPP)
+sd(df_in$MeanPP)
+}
+
+
+for(x in c(6,14,15,16)){
+print(colnames(final_fvg)[x])
+d=summary(final_fvg[,x])[c(1,3,4,6)]
+s=sd(final_fvg[,x])
+print(d)
+print("SD")
+print(s)
+print("*************************")
+}
+
+
+data2<-a[a$p_score>=0.05,]
+  x<-sample(rownames(data2),500000)
+  data_ns<-a[rownames(a)%in%x,]
+  data_s<-a[a$p_score<0.05,]
+  data_ok<-rbind(data_ns,data_s)
+
+  library(qqman)
+  palhattan <- c("royalblue4", "goldenrod1","forestgreen","lightcyan3", "cadetblue2", "darkviolet", "darkorange2", "orchid", "firebrick4", "darkolivegreen3", "red3", "black", "palevioletred1", "steelblue3", "violetred3", "salmon1", "slateblue2", "palegreen2", "steelblue1", "yellow2", "rosybrown1", "darkslategray")
+  pdf("Manhattan_TR_MAF05.pdf",width=21)
+    manhattan(data_ok, chr = "chr", bp = "ps", p = "p_score", snp = "rs", col = palhattan, chrlabs = NULL, suggestiveline = F, genomewideline = -log10(5e-08), highlight = NULL, logp = TRUE, cex.main=2.5)
+    dev.off()
+
+for(x in 1:22){
+chr=assign(paste("chr",x,sep=""),x)
+chr=subset(ld,chr==x)
+}
+
+for(x in 1:22){
+chr=(paste("chr",x,sep="")
+chr}
+}
+
+for (x in 1:22) {
+cont=subset(ld, chr == x)
+chr <- paste("chr",x, sep="")
+eval(call("<-", as.name(chr), cont))
+}
+
+for (x in 1:22) {
+chr <- paste("chr",x, sep="")
+as.name(chr)$fdr2=p.adjust(as.name(chr)$pval,"fdr")
+}
+
+chr1$fdr2=p.adjust(chr1$pval,"fdr")
+chr2$fdr2=p.adjust(chr2$pval,"fdr")
+chr3$fdr2=p.adjust(chr3$pval,"fdr")
+chr4$fdr2=p.adjust(chr4$pval,"fdr")
+chr5$fdr2=p.adjust(chr5$pval,"fdr")
+chr6$fdr2=p.adjust(chr6$pval,"fdr")
+chr6$fdr2=p.adjust(chr6$pval,"fdr")
+chr7$fdr2=p.adjust(chr7$pval,"fdr")
+chr8$fdr2=p.adjust(chr8$pval,"fdr")
+chr9$fdr2=p.adjust(chr9$pval,"fdr")
+chr10$fdr2=p.adjust(chr10$pval,"fdr")
+chr11$fdr2=p.adjust(chr11$pval,"fdr")
+chr12$fdr2=p.adjust(chr12$pval,"fdr")
+chr13$fdr2=p.adjust(chr13$pval,"fdr")
+chr14$fdr2=p.adjust(chr14$pval,"fdr")
+chr15$fdr2=p.adjust(chr15$pval,"fdr")
+chr16$fdr2=p.adjust(chr16$pval,"fdr")
+chr17$fdr2=p.adjust(chr17$pval,"fdr")
+chr18$fdr2=p.adjust(chr18$pval,"fdr")
+chr19$fdr2=p.adjust(chr19$pval,"fdr")
+chr20$fdr2=p.adjust(chr20$pval,"fdr")
+chr21$fdr2=p.adjust(chr21$pval,"fdr")
+chr22$fdr2=p.adjust(chr22$pval,"fdr")
+
+for (x in 2:22) {
+chr=paste("chr",x,"_no_head",sep="")
+gCh=get(paste("chr",x,"_no_head",sep=""))
+lis3[[x]]<-gCh
+}
+
+for (x in 2:22) {
+chr=paste("chr",x,"_no_head",sep="")
+gCH=get(paste("chr",x,sep=""))
+n=names(gCH)<-NULL
+boh[[x]]<-gCH
+}
+
+for (x in 2:22) {
+chr=paste("chr",x,sep="")
+gCh=get(chr)
+names(gCh)<-NULL
+}
+ finlis=list(chr1,chr2_no_head,chr3_no_head,chr4_no_head,chr5_no_head,chr6_no_head,chr7_no_head,chr8_no_head,chr9_no_head,chr10_no_head,chr11_no_head,chr12_no_head,chr13_no_head,chr14_no_head,chr15_no_head,chr16_no_head,chr17_no_head,chr18_no_head,chr19_no_head,chr20_no_head,chr21_no_head,chr22_no_head)
+
+cc=list()
+for(x in 1:22){
+chr=get(paste("chr",x,sep=""))
+cc[[x]]<-chr
+}
+
+
+##Creazione heatmap
+library(ggplot2)
+library(wesanderson)
+pal <- wes_palette("Zissou1", 100, type = "continuous")
+heat <- ggplot(d, aes(x=Tissue, y=ID, fill=log2)) + xlab("Tissues") + ylab("Genes") + geom_tile()+ scale_fill_gradientn(colours = pal) +
+scale_x_discrete(expand = c(0, 0)) +
+scale_y_discrete(expand = c(0, 0)) +
+coord_fixed(ratio=2/3) +
+theme(axis.text.y=element_text(face="italic"))
+well <- heat + labs(fill = "log2(TPM + 1)")
+pdf("heatmap_geni_discro_poster.pdf")
+well
+dev.off()
+
+gene_adjust=function(file,dfout,gene){
+a=read.csv(file)
+tiss=a[,1]
+tiss=tiss[-21]
+a=a[1:20,-1]
+a$S1=as.numeric(a$S1)
+a$av=rowMeans(a,na.rm=T)
+a$tissues=tiss
+dfout=a
+dfout=dfout[,1]
+dfout<<-dfout
+}

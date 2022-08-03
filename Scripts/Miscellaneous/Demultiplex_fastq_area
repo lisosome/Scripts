@@ -1,0 +1,96 @@
+#Pre-processing fastq WGS: demultiplexing
+
+declare -A runs=()
+runs[RUN_1]=$(echo "220114_A00618_0204_AHKWWJDSX2")
+runs[RUN_2]=$(echo "220121_A00618_0207_AHKWLGDSX2")
+
+for run_n in RUN_1 RUN_2
+do
+run_name=(${runs[${run_n}]})
+out_folder=/large/___HOME___/burlo/nardone/analyses/FVG_COVID_HC/MERGING/LISTS
+find -L /analisi_da_consegnare/burlo/${run_name} -type f -name "*.gz" | fgrep -v "Undetermined" | sort > ${out_folder}/${run_n}_files_list.txt
+done
+
+#Merge data from different runs
+set +H
+out_path=/large/___SCRATCH___/burlo/nardone/FVG_COVID_HC/220114_220121/0.RAW_DATA
+base_lists=/large/___HOME___/burlo/nardone/analyses/FVG_COVID_HC/MERGING/LISTS
+(echo "#!/usr/bin/env bash" ;paste -d " " ${base_lists}/RUN_1_files_list.txt ${base_lists}/RUN_2_files_list.txt | awk -v outfile=${out_path} '{OFS=" "}{split($1,a,"/");split(a[7],b,"_"); print "cat",$0,">",outfile"/"b[1]"_"b[2]"_L001_"b[3]"_"b[4]}') > ${base_lists}/MERGE_batch_220114_220121.sh
+split -l 24 -d -a 3 --additional-suffix=.sh ${base_lists}/MERGE_batch_220114_220121.sh ${base_lists}/MERGE_batch_220114_220121_BATCH
+
+
+#Now submit the merging on all nodes
+log_folder=/large/___HOME___/burlo/nardone/analyses/FVG_COVID_HC/MERGING/Log
+mkdir -p ${log_folder}
+mkdir -p /large/___SCRATCH___/burlo/nardone/FVG_COVID_HC/220114_220121/0.RAW_DATA
+
+for batch in {000..004}
+do
+chmod u+x /large/___HOME___/burlo/nardone/analyses/FVG_COVID_HC/MERGING/LISTS/MERGE_batch_220114_220121_BATCH${batch}.sh
+done
+
+for batch in {000..004}
+do
+  cores=1
+  queue=thin
+  mem=100g
+  echo "/large/___HOME___/burlo/nardone/analyses/FVG_COVID_HC/MERGING/LISTS/MERGE_batch_220114_220121_BATCH${batch}.sh" | qsub -N merge_${batch} -q ${queue} -V -k eod -o ${log_folder}/merge_${batch}.log -e ${log_folder}/merge_${batch}.e -l select=1:ncpus=${cores}:mem=${mem} -l walltime=96:00:00
+done
+batch="000"
+echo "/large/___HOME___/burlo/nardone/analyses/FVG_COVID_HC/MERGING/LISTS/MERGE_batch_220114_220121_BATCH000.sh" | qsub -N merge_${batch} -q ${queue} -V -k eod -o ${log_folder}/merge_${batch}.log -e ${log_folder}/merge_${batch}.e -l select=1:ncpus=${cores}:mem=${mem} -l walltime=96:00:00
+
+
+for batch in {000..004}
+do
+  cores=24
+  queue=thin
+  mem=500g
+ qsub -N merge_${batch} -q ${queue} -V -k eod -o ${log_folder}/merge_${batch}.log -e ${log_folder}/merge_${batch}.e -l select=1:ncpus=${cores}:mem=${mem} -l walltime=96:00:00 /large/___HOME___/burlo/nardone/analyses/FVG_COVID_HC/MERGING/LISTS/MERGE_batch_220114_220121_BATCH${batch}.sh
+done
+
+while read line
+do
+  echo $line | qsub -N merge_${batch} -q ${queue} -V -k eod -o ${log_folder}/merge_${batch}.log -e ${log_folder}/merge_${batch}.e -l select=1:ncpus=${cores}:mem=${mem} -l walltime=96:00:00
+done < /large/___HOME___/burlo/nardone/analyses/FVG_COVID_HC/MERGING/LISTS/MERGE_batch_220114_220121_BATCH000.sh
+
+echo "cat /large/___HOME___/burlo/nardone/test_fastq/3247_S12_R2_001.fastq.gz /large/___HOME___/burlo/nardone/test_fastq/3248_S14_R1_001.fastq.gz > /large/___HOME___/burlo/nardone/test_fastq/cat_file.fastq.gz" | qsub -N merge_${batch} -q ${queue} -V -k eod -o ${log_folder}/merge_000.log -e ${log_folder}/merge_${batch}.e -l select=1:ncpus=${cores}:mem=${mem} -l walltime=96:00:00
+
+echo "cat /analisi_da_consegnare/burlo/220114_A00618_0204_AHKWWJDSX2/0.FASTQ/BWG6/3247_S12_R2_001.fastq.gz /analisi_da_consegnare/burlo/220121_A00618_0207_AHKWLGDSX2/0.FASTQ/BWG6/3247_S12_R2_001.fastq.gz > /large/___SCRATCH___/burlo/nardone/FVG_COVID_HC/220114_220121/0.RAW_DATA/3247_S12_L001_R2_001.fastq.gz" | qsub -N merge_000 -q ${queue} -V -k eod -o /large/___HOME___/burlo/nardone/analyses/FVG_COVID_HC/MERGING/Log/merge_${batch}.log -e /large/___HOME___/burlo/nardone/analyses/FVG_COVID_HC/MERGING/Log/merge_${batch}.e -l select=1:ncpus=${cores}:mem=${mem} -l walltime=96:00:00
+
+for batch in {000..004}
+do
+/large/___HOME___/burlo/nardone/analyses/FVG_COVID_HC/MERGING/LISTS/MERGE_batch_220114_220121_BATCH${batch}.sh
+done
+
+
+
+################################
+
+#demultiplexing campioni cromotripsi ---07/04/2022---
+
+declare -A run=()
+run[RUN_1]=$(echo "210525_A00618_0162_BHNVNFDSXY")
+run[RUN_2]=$(echo "210608_A00618_0165_BHNN3KDSXY")
+declare -a samples=(bo01 21443)
+#declare -a runs=(210608_A00618_0165_BHNN3KDSXY 210525_A00618_0162_BHNVNFDSXY)
+
+for run_n in RUN_1 RUN_2
+do
+run_name=${run[${run_n}]}
+#sam=${samples[${x}]}
+#echo "${run_name}/${sam}"
+out_folder=/large/___HOME___/burlo/nardone/analyses/CHROMOTRIPSIS/MERGING/LISTS
+find -L /analisi_da_consegnare/burlo/${run_name} -type f -name "bo01*.gz" | sort >> ${out_folder}/${run_n}_files_list.txt
+done
+
+
+out_path=/large/___SCRATCH___/burlo/nardone/chromo_samples/0.RAWDATA
+base_lists=/large/___HOME___/burlo/nardone/analyses/CHROMOTRIPSIS/MERGING/LISTS
+(echo '#!/usr/bin/env bash' ;paste -d " " ${base_lists}/RUN_1_files_list.txt ${base_lists}/RUN_2_files_list.txt | awk -v outfile=${out_path} '{OFS=" "}{split($1,a,"/");split(a[6],b,"_"); print "cat",$0,">",outfile"/"b[1]"_"b[2]"_L001_"b[3]"_"b[4]}') > ${base_lists}/MERGE_chromo_samples.sh
+
+log_folder=/large/___HOME___/burlo/nardone/analyses/CHROMOTRIPSIS/MERGING/Log
+mkdir -p ${log_folder}
+cores=1
+queue=fat
+mem=100g
+echo "/large/___HOME___/burlo/nardone/analyses/CHROMOTRIPSIS/MERGING/LISTS/MERGE_chromo_samples.sh" | qsub -N merge_chromo -q ${queue} -V -k eod -o ${log_folder}/merge_chromo.log -e ${log_folder}/merge_chromo.e -l select=1:ncpus=${cores}:mem=${mem} -l walltime=96:00:00

@@ -1,0 +1,11 @@
+### Pipeline QC SNP array
+## Creazione ambiente con conda
+
+conda config --append envs_dirs /shared/software/conda/envs
+conda config --prepend envs_dirs ~/.conda/envs
+## Verificare che l'ambiente sia disponibile
+conda env list
+##Avviare ambiente
+conda activate snakemake_g
+## Avvio wrapper
+/shared/pipelines/snparrayqc_snakemake/Scripts/run_snparrayqc
